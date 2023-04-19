@@ -1,0 +1,30 @@
+version: '3'
+services:
+  db:
+    image: postgres:15.2
+    environment:
+      POSTGRES_HOST: ${POSTGRES_HOST}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./initdb:/docker-entrypoint-initdb.d
+    networks:
+      - app
+  server:
+    build: .
+    environment:
+      POSTGRES_HOST: ${POSTGRES_HOST}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - '443:443'
+    depends_on:
+      - db
+    networks:
+      - app
+networks:
+  app:
